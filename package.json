@@ -1,0 +1,13 @@
+{
+  "name": "jarvis-chatgpt",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest",
+    "@modelcontextprotocol/ext-apps": "latest",
+    "express": "latest"
+  }
+}
