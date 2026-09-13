@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JARVIS</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at center, #102d52 0%, #061321 38%, #02070d 75%);
+      color: #e9f7ff;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      border-bottom: 1px solid rgba(80, 190, 255, 0.18);
+      background: rgba(2, 10, 18, 0.65);
+      backdrop-filter: blur(15px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #46c8ff;
+      box-shadow: 0 0 15px #46c8ff;
+    }
+
+    .brand h1 {
+      font-size: 20px;
+      letter-spacing: 5px;
+    }
+
+    .status {
+      font-size: 11px;
+      color: #55d6ff;
+      letter-spacing: 2px;
+    }
+
+    /* MAIN */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .greeting {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .greeting h2 {
+      font-size: clamp(27px, 6vw, 46px);
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .greeting p {
+      color: #7fa8c5;
+      font-size: 14px;
+    }
+
+    /* REACTOR */
+    .reactor {
+      width: min(70vw, 300px);
+      height: min(70vw, 300px);
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0 30px;
+    }
+
+    .ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(68, 201, 255, 0.55);
+    }
+
+    .ring.one {
+      width: 100%;
+      height: 100%;
+      animation: spin 12s linear infinite;
+    }
+
+    .ring.two {
+      width: 82%;
+      height: 82%;
+      border-style: dashed;
+      animation: spinReverse 8s linear infinite;
+    }
+
+    .ring.three {
+      width: 63%;
+      height: 63%;
+      box-shadow:
+        0 0 25px rgba(41, 180, 255, 0.35),
+        inset 0 0 25px rgba(41, 180, 255, 0.25);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    .core {
+      width: 34%;
+      height: 34%;
+      border-radius: 50%;
+      background: radial-gradient(circle, #b8efff 0%, #28aeea 35%, #075d9c 65%, #021526 100%);
+      box-shadow:
+        0 0 25px #2bbcff,
+        0 0 60px rgba(43, 188, 255, 0.65);
+      animation: corePulse 2s ease-in-out infinite;
+    }
+
+    .reactor::before,
+    .reactor::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(65, 190, 255, 0.18);
+    }
+
+    .reactor::before {
+      width: 115%;
+      height: 115%;
+    }
+
+    .reactor::after {
+      width: 130%;
+      height: 130%;
+    }
+
+    /* COMMAND */
+    .command {
+      text-align: center;
+      color: #77c8ed;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 22px;
+    }
+
+    .mic {
+      width: 70px;
+      height: 70px;
+      border: 1px solid rgba(80, 205, 255, 0.7);
+      border-radius: 50%;
+      background: rgba(14, 57, 87, 0.55);
+      color: #8ee3ff;
+      font-size: 27px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(55, 190, 255, 0.25);
+      transition: 0.25s;
+    }
+
+    .mic:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 35px rgba(55, 190, 255, 0.55);
+    }
+
+    .mic.listening {
+      animation: micPulse 1s infinite;
+      background: rgba(22, 107, 150, 0.6);
+    }
+
+    /* BOTTOM ACTIONS */
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .action {
+      border: 1px solid rgba(85, 190, 240, 0.2);
+      background: rgba(8, 27, 43, 0.7);
+      color: #9ac8df;
+      border-radius: 12px;
+      padding: 11px 15px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: 0.2s;
+    }
+
+    .action:hover {
+      border-color: rgba(85, 210, 255, 0.7);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* ANIMATIONS */
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes spinReverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: .7; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+
+    @keyframes corePulse {
+      0%, 100% { transform: scale(.9); }
+      50% { transform: scale(1.08); }
+    }
+
+    @keyframes micPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(55,190,255,.3); }
+      50% { box-shadow: 0 0 45px rgba(55,190,255,.8); }
+    }
+
+    @media (max-width: 500px) {
+      .topbar {
+        padding: 0 15px;
+      }
+
+      .status {
+        font-size: 9px;
+      }
+
+      .actions {
+        max-width: 330px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-dot"></div>
+        <h1>JARVIS</h1>
+      </div>
+
+      <div class="status">SYSTEM ONLINE</div>
+    </header>
+
+    <main>
+
+      <section class="greeting">
+        <h2>Good to see you.</h2>
+        <p>Your AI assistant is ready.</p>
+      </section>
+
+      <div class="reactor">
+        <div class="ring one"></div>
+        <div class="ring two"></div>
+        <div class="ring three"></div>
+        <div class="core"></div>
+      </div>
+
+      <div class="command" id="commandText">
+        TAP THE MICROPHONE TO SPEAK
+      </div>
+
+      <button class="mic" id="micButton">🎙</button>
+
+      <div class="actions">
+        <button class="action">💬 Chat</button>
+        <button class="action">🌐 Web Search</button>
+        <button class="action">☀ Weather</button>
+        <button class="action">⚙ Settings</button>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script>
+    const micButton = document.getElementById("micButton");
+    const commandText = document.getElementById("commandText");
+
+    let listening = false;
+
+    micButton.addEventListener("click", () => {
+      listening = !listening;
+
+      if (listening) {
+        micButton.classList.add("listening");
+        commandText.textContent = "LISTENING...";
+      } else {
+        micButton.classList.remove("listening");
+        commandText.textContent = "TAP THE MICROPHONE TO SPEAK";
+      }
+    });
+  </script>
+
+</body>
+</html>
